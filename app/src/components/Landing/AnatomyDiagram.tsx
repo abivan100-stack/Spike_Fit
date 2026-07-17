@@ -6,10 +6,10 @@ import ShoeIllustration from '../shared/ShoeIllustration';
 const ALL_BUILT = () => ({}); // no-op partStyle -> every layer renders at rest (fully built)
 
 function elbowPoint(part: typeof ANATOMY_PARTS[number]) {
-  if (part.side === 'right') return { x: part.labelPos.x - 34, y: part.labelPos.y };
-  if (part.side === 'left') return { x: part.labelPos.x + 34, y: part.labelPos.y };
-  if (part.side === 'top') return { x: part.anchor.x, y: part.labelPos.y + 22 };
-  return { x: part.anchor.x, y: part.labelPos.y - 22 }; // bottom
+  if (part.side === 'right') return { x: part.labelPos.x - 44, y: part.labelPos.y };
+  if (part.side === 'left') return { x: part.labelPos.x + 44, y: part.labelPos.y };
+  if (part.side === 'top') return { x: part.anchor.x, y: part.labelPos.y + 28 };
+  return { x: part.anchor.x, y: part.labelPos.y - 28 }; // bottom
 }
 
 export default function AnatomyDiagram() {
@@ -22,12 +22,12 @@ export default function AnatomyDiagram() {
     <div data-anatomy className="grid gap-10" style={{ gridTemplateColumns: '1.3fr .85fr' }}>
       {/* Desktop / tablet: interactive leader-line diagram + side panel */}
       <div className="hidden md:block">
-        <svg viewBox="-320 -90 1260 580" className="w-full" style={{ height: 'auto', display: 'block' }}>
+        <svg viewBox="-420 -130 1520 700" className="w-full" style={{ height: 'auto', display: 'block' }}>
           <ShoeIllustration partStyle={ALL_BUILT} />
           {ANATOMY_PARTS.map((part, i) => {
             const isActive = activeId === part.id;
             const elbow = elbowPoint(part);
-            const textX = part.side === 'left' ? part.labelPos.x - 10 : part.side === 'right' ? part.labelPos.x + 10 : part.labelPos.x;
+            const textX = part.side === 'left' ? part.labelPos.x - 14 : part.side === 'right' ? part.labelPos.x + 14 : part.labelPos.x;
             const textAnchor = part.side === 'left' ? 'end' : part.side === 'right' ? 'start' : 'middle';
             const lineColor = isActive ? '#20488F' : '#17140E';
             return (
@@ -47,18 +47,18 @@ export default function AnatomyDiagram() {
                   animationDelay: reducedMotion ? undefined : `${260 + i * 90}ms`,
                 }}
               >
-                <line x1={part.anchor.x} y1={part.anchor.y} x2={elbow.x} y2={elbow.y} stroke={lineColor} strokeWidth={isActive ? 1.6 : 1} strokeDasharray={isActive ? undefined : '2,3'} opacity={isActive ? 1 : 0.55} />
-                <line x1={elbow.x} y1={elbow.y} x2={part.labelPos.x} y2={part.labelPos.y} stroke={lineColor} strokeWidth={isActive ? 1.6 : 1} opacity={isActive ? 1 : 0.55} />
-                <circle cx={part.anchor.x} cy={part.anchor.y} r={isActive ? 6 : 4.5} fill={isActive ? '#20488F' : '#F3ECDA'} stroke="#17140E" strokeWidth="1.5" />
+                <line x1={part.anchor.x} y1={part.anchor.y} x2={elbow.x} y2={elbow.y} stroke={lineColor} strokeWidth={isActive ? 2.2 : 1.4} strokeDasharray={isActive ? undefined : '3,4'} opacity={isActive ? 1 : 0.55} />
+                <line x1={elbow.x} y1={elbow.y} x2={part.labelPos.x} y2={part.labelPos.y} stroke={lineColor} strokeWidth={isActive ? 2.2 : 1.4} opacity={isActive ? 1 : 0.55} />
+                <circle cx={part.anchor.x} cy={part.anchor.y} r={isActive ? 8 : 6} fill={isActive ? '#20488F' : '#F3ECDA'} stroke="#17140E" strokeWidth="2" />
                 <text
                   x={textX}
                   y={part.labelPos.y}
                   textAnchor={textAnchor}
                   dominantBaseline="middle"
                   fontFamily="Archivo, sans-serif"
-                  fontSize="12"
+                  fontSize="26"
                   fontWeight={800}
-                  letterSpacing=".06em"
+                  letterSpacing=".04em"
                   fill={isActive ? '#20488F' : '#17140E'}
                   style={{ textTransform: 'uppercase' }}
                 >
