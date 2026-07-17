@@ -71,8 +71,8 @@ export function scoreShoe(shoe: Shoe, answers: Answers): ScoreResult {
     s += profileBonus(shoe, profile);
   }
 
-  if (answers.surface) s += shoe.surfaces.includes(answers.surface) ? 6 : -4;
-  if (answers.budget) s += inBudget(shoe.price, answers.budget) ? 5 : -7;
+  if (answers.surface) s += shoe.surfaces.includes(answers.surface) ? 7 : -9;
+  if (answers.budget) s += inBudget(shoe.price, answers.budget) ? 6 : -12;
 
   if (answers.strike) {
     if ((answers.strike === 'fore' || answers.strike === 'mid') && shoe.drop <= 4) s += 3;
@@ -107,20 +107,19 @@ export function buildWhy(shoe: Shoe, answers: Answers, injuryNotes: string[]): s
 const RESULT_COUNT = 6;
 
 export function recommend(answers: Answers): ScoredShoe[] {
-  const profile = resolveProfile(answers);
   const scored = CATALOG.map((sh) => {
     const { rawScore, score, injuryNotes } = scoreShoe(sh, answers);
     return { sh, rawScore, score, injuryNotes };
   });
 
-  const inCat = scored
-    .filter((e) => profile && e.sh.events.some((c) => profile.eventCategories.includes(c)))
-    .sort((a, b) => b.rawScore - a.rawScore);
-  const rest = scored
-    .filter((e) => !(profile && e.sh.events.some((c) => profile.eventCategories.includes(c))))
-    .sort((a, b) => b.rawScore - a.rawScore);
-
-  const pick = [...inCat, ...rest].slice(0, RESULT_COUNT);
+  // Rank purely by score — no hard "event category" bucket ahead of
+  // everything else. Event fit is still the single biggest factor built
+  // into rawScore (see scoreShoe), so category-appropriate shoes still
+  // dominate in the normal case; but a shoe that's badly wrong on budget,
+  // surface, or protection can now actually be out-ranked, so changing an
+  // answer via Edit reliably changes the results instead of just
+  // reshuffling the same fixed set of event-tagged shoes.
+  const pick = [...scored].sort((a, b) => b.rawScore - a.rawScore).slice(0, RESULT_COUNT);
 
   return pick.map((e, i) => ({
     ...e.sh,
