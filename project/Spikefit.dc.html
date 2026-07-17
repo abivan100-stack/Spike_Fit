@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500;1,600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:#EDE3CE;color:#17140E;font-family:'Archivo',system-ui,sans-serif;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+a{color:#20488F;text-decoration:none}
+a:hover{color:#D6462C}
+::selection{background:#20488F;color:#F0E7D4}
+button{font-family:inherit}
+@keyframes sfUp{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
+@keyframes sfIn{from{opacity:0;transform:translateY(14px) scale(.98)}to{opacity:1;transform:none}}
+@keyframes sfSpin{to{transform:rotate(360deg)}}
+@keyframes sfMarq{to{transform:translateX(-50%)}}
+@keyframes sfBlink{0%,100%{opacity:1}50%{opacity:.2}}
+@keyframes sfFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+@keyframes sfDraw{to{stroke-dashoffset:0}}
+@media (prefers-reduced-motion: reduce){*{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}}
+@media (max-width:1040px){[data-quizgrid]{grid-template-columns:1fr 320px!important}[data-rail]{display:none!important}}
+@media (max-width:840px){[data-hero]{grid-template-columns:1fr!important;padding-top:34px!important}[data-quizgrid]{grid-template-columns:1fr!important}[data-stage]{position:static!important;order:-1!important;margin-bottom:22px}[data-howgrid]{grid-template-columns:1fr!important}[data-howgrid]>div{border-right:none!important;border-bottom:1.5px solid #17140E}}
+@media (max-width:620px){[data-optgrid]{grid-template-columns:1fr 1fr!important}header{padding:15px 18px!important}[data-pad]{padding-left:18px!important;padding-right:18px!important}}
+@media (max-width:400px){[data-optgrid]{grid-template-columns:1fr!important}}
+</style>
+</helmet>
+
+<div style="position:relative;min-height:100vh;overflow:hidden;background:#EDE3CE">
+
+<sc-if value="{{ showGrain }}" hint-placeholder-val="{{ true }}">
+<div aria-hidden="true" style="position:fixed;inset:0;z-index:9998;pointer-events:none;mix-blend-mode:multiply;opacity:.09;background-image:url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22160%22 height=%22160%22><filter id=%22n%22><feTurbulence type=%22fractalNoise%22 baseFrequency=%220.85%22 numOctaves=%222%22 stitchTiles=%22stitch%22/></filter><rect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23n)%22/></svg>')"></div>
+</sc-if>
+
+<!-- ===== TOP BAR ===== -->
+<header style="position:relative;z-index:20;display:flex;align-items:center;justify-content:space-between;padding:20px 34px;border-bottom:1.5px solid #17140E">
+  <div style="display:flex;align-items:baseline;gap:12px;cursor:pointer" onClick="{{ goHome }}">
+    <span style="font-family:'Anton';font-size:26px;letter-spacing:.02em;text-transform:uppercase;line-height:1">Spikefit</span>
+    <span style="font:600 10px/1 'Archivo';letter-spacing:.22em;text-transform:uppercase;color:#20488F">Fitting&nbsp;Room</span>
+  </div>
+  <div style="display:flex;align-items:center;gap:22px">
+    <span style="font:600 10.5px/1 'Archivo';letter-spacing:.2em;text-transform:uppercase;color:#5c5647">Est. Lane 1 · Track &amp; Field</span>
+    <sc-if value="{{ inFlow }}" hint-placeholder-val="{{ false }}">
+      <button onClick="{{ restart }}" style="border:1.5px solid #17140E;background:transparent;color:#17140E;font:700 11px/1 'Archivo';letter-spacing:.14em;text-transform:uppercase;padding:9px 15px;border-radius:2px;cursor:pointer;transition:all .25s ease" style-hover="background:#17140E;color:#EDE3CE">Restart</button>
+    </sc-if>
+  </div>
+</header>
+
+<!-- =========================================================
+     LANDING
+========================================================= -->
+<sc-if value="{{ isLanding }}" hint-placeholder-val="{{ true }}">
+<main style="position:relative;z-index:10">
+
+  <section data-hero data-pad style="position:relative;max-width:1280px;margin:0 auto;padding:56px 34px 20px;display:grid;grid-template-columns:1.05fr .95fr;gap:24px;align-items:center">
+    <div style="animation:sfUp .8s cubic-bezier(.16,1,.3,1) both">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:22px">
+        <span style="width:38px;height:1.5px;background:#17140E;display:inline-block"></span>
+        <span style="font:700 11px/1 'Archivo';letter-spacing:.28em;text-transform:uppercase;color:#20488F">The Spike Fitting, Reimagined</span>
+      </div>
+      <h1 style="font-family:'Anton';font-weight:400;font-size:clamp(52px,7.4vw,116px);line-height:.86;letter-spacing:.005em;text-transform:uppercase;margin:0;text-wrap:balance">
+        The right<br>spike<br><span style="color:#20488F">finds</span> you.
+      </h1>
+      <p style="max-width:440px;margin:26px 0 0;font-size:17px;line-height:1.55;color:#37322a">Answer six questions. Watch your shoe assemble, piece by piece. Walk away with the exact spike for your event, your stride, and your season — not a shelf of guesses.</p>
+      <div style="display:flex;align-items:center;gap:20px;margin-top:34px;flex-wrap:wrap">
+        <button data-magnetic onClick="{{ start }}" style="position:relative;display:inline-flex;align-items:center;gap:14px;background:#20488F;color:#F3ECDA;border:none;font:800 15px/1 'Archivo';letter-spacing:.06em;text-transform:uppercase;padding:19px 30px;border-radius:3px;cursor:pointer;box-shadow:4px 4px 0 #17140E;transition:transform .2s ease,box-shadow .2s ease" style-hover="transform:translate(-2px,-2px);box-shadow:6px 6px 0 #17140E">
+          <span>Start the fitting</span>
+          <span style="font-size:20px;transform:translateY(-1px)">→</span>
+        </button>
+        <span style="font:600 12px/1.4 'Archivo';letter-spacing:.04em;color:#5c5647">Takes ~90&nbsp;seconds<br>No account, no email.</span>
+      </div>
+    </div>
+
+    <!-- static, fully-built hero shoe -->
+    <div style="position:relative;animation:sfIn 1s cubic-bezier(.16,1,.3,1) both;animation-delay:.15s">
+      <div style="position:absolute;inset:-6% -4%;background:radial-gradient(circle,#17140E 1.1px,transparent 1.3px) 0 0/13px 13px;opacity:.16;transform:rotate(-4deg)"></div>
+      <div style="position:absolute;right:2%;top:-6%;font-family:'Anton';font-size:clamp(90px,15vw,220px);line-height:1;color:#20488F;opacity:.12;letter-spacing:-.02em">08</div>
+      <div style="position:relative;background:#F3ECDA;border:1.5px solid #17140E;border-radius:4px;padding:22px 18px;box-shadow:8px 8px 0 #17140E;animation:sfFloat 7s ease-in-out infinite">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px">
+          <span style="font:700 10px/1 'Archivo';letter-spacing:.2em;text-transform:uppercase;color:#5c5647">Fig. 01 — The Anatomy</span>
+          <span style="font-family:'Anton';font-size:18px;color:#D6462C">Series 01</span>
+        </div>
+        <div style="position:relative;border:1.5px solid #17140E;border-radius:3px;overflow:hidden;background:#17140E">
+          <img src="assets/hero-shoe.png" alt="Racing shoes" style="width:100%;height:clamp(220px,30vw,330px);object-fit:cover;object-position:center 50%;display:block;filter:sepia(.14) saturate(1.02) contrast(1.04)" />
+          <span style="position:absolute;left:10px;bottom:9px;font:700 8.5px/1 'Archivo';letter-spacing:.16em;text-transform:uppercase;color:#5c5647;background:#F3ECDA;border:1px solid #17140E;padding:4px 7px;border-radius:2px">The Anatomy</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;border-top:1.5px solid #17140E;margin-top:10px;padding-top:9px">
+          <span style="font:700 10px/1 'Archivo';letter-spacing:.14em;text-transform:uppercase">9 Pins</span>
+          <span style="font:700 10px/1 'Archivo';letter-spacing:.14em;text-transform:uppercase">Carbon Plate</span>
+          <span style="font:700 10px/1 'Archivo';letter-spacing:.14em;text-transform:uppercase">132g</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <sc-if value="{{ showMarquee }}" hint-placeholder-val="{{ true }}">
+  <div style="border-top:1.5px solid #17140E;border-bottom:1.5px solid #17140E;background:#17140E;color:#EDE3CE;overflow:hidden;white-space:nowrap;margin-top:34px">
+    <div style="display:inline-block;animation:sfMarq 26s linear infinite;padding:13px 0;font-family:'Anton';font-size:22px;letter-spacing:.04em;text-transform:uppercase">
+      <span>Sprints ✦ Middle Distance ✦ Distance ✦ Hurdles ✦ Jumps ✦ Throws ✦ Road ✦ Cross Country ✦ Sprints ✦ Middle Distance ✦ Distance ✦ Hurdles ✦ Jumps ✦ Throws ✦ Road ✦ Cross Country ✦ </span>
+    </div>
+  </div>
+  </sc-if>
+
+  <section style="max-width:1280px;margin:0 auto;padding:60px 34px 20px">
+    <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:30px">
+      <span style="font-family:'Anton';font-size:20px;color:#D6462C">§</span>
+      <span style="font:700 11px/1 'Archivo';letter-spacing:.26em;text-transform:uppercase">How the fitting works</span>
+    </div>
+    <div data-howgrid style="display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1.5px solid #17140E">
+      <div style="padding:30px 26px;border-right:1.5px solid #17140E">
+        <div style="font-family:'Anton';font-size:64px;line-height:.9;color:#20488F">01</div>
+        <h3 style="font:800 18px/1.15 'Archivo';margin:14px 0 8px;text-transform:uppercase;letter-spacing:.02em">Name your event</h3>
+        <p style="margin:0;font-size:14.5px;line-height:1.5;color:#4a4438">From 60m blocks to a muddy 10k. Your event sets the plate and the whole geometry of the shoe.</p>
+      </div>
+      <div style="padding:30px 26px;border-right:1.5px solid #17140E;background:#F3ECDA">
+        <div style="font-family:'Anton';font-size:64px;line-height:.9;color:#D6462C">02</div>
+        <h3 style="font:800 18px/1.15 'Archivo';margin:14px 0 8px;text-transform:uppercase;letter-spacing:.02em">Dial in your stride</h3>
+        <p style="margin:0;font-size:14.5px;line-height:1.5;color:#4a4438">Surface, experience, foot strike, budget, and anything we should protect. Six focused questions.</p>
+      </div>
+      <div style="padding:30px 26px">
+        <div style="font-family:'Anton';font-size:64px;line-height:.9;color:#20488F">03</div>
+        <h3 style="font:800 18px/1.15 'Archivo';margin:14px 0 8px;text-transform:uppercase;letter-spacing:.02em">Meet your matches</h3>
+        <p style="margin:0;font-size:14.5px;line-height:1.5;color:#4a4438">Up to four spikes, scored and explained — with a side-by-side you can actually read.</p>
+      </div>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:0;border:1.5px solid #17140E;border-top:none;font-family:'Anton';text-transform:uppercase">
+      <div style="flex:1;min-width:120px;padding:16px 20px;border-right:1.5px solid #17140E"><span style="color:#D6462C;font-size:28px">8</span> <span style="font-size:13px;letter-spacing:.1em">Events</span></div>
+      <div style="flex:1;min-width:120px;padding:16px 20px;border-right:1.5px solid #17140E"><span style="color:#20488F;font-size:28px">40+</span> <span style="font-size:13px;letter-spacing:.1em">Models</span></div>
+      <div style="flex:1;min-width:120px;padding:16px 20px;border-right:1.5px solid #17140E"><span style="color:#D6462C;font-size:28px">6</span> <span style="font-size:13px;letter-spacing:.1em">Questions</span></div>
+      <div style="flex:1;min-width:140px;padding:16px 20px"><span style="color:#20488F;font-size:28px">1</span> <span style="font-size:13px;letter-spacing:.1em">Perfect fit</span></div>
+    </div>
+    <div style="text-align:center;padding:52px 0 60px">
+      <button data-magnetic onClick="{{ start }}" style="display:inline-flex;align-items:center;gap:14px;background:transparent;color:#17140E;border:1.5px solid #17140E;font:800 15px/1 'Archivo';letter-spacing:.06em;text-transform:uppercase;padding:19px 34px;border-radius:3px;cursor:pointer;transition:all .25s ease" style-hover="background:#17140E;color:#EDE3CE;gap:22px">
+        <span>Begin your fitting</span><span style="font-size:20px">→</span>
+      </button>
+    </div>
+  </section>
+</main>
+</sc-if>
+
+<!-- =========================================================
+     QUIZ
+========================================================= -->
+<sc-if value="{{ isQuiz }}" hint-placeholder-val="{{ false }}">
+<main style="position:relative;z-index:10">
+  <!-- progress bar -->
+  <div style="height:5px;background:#d8cdb4;border-bottom:1.5px solid #17140E">
+    <div style="{{ barStyle }}"></div>
+  </div>
+
+  <section data-quizgrid data-pad style="max-width:1280px;margin:0 auto;padding:30px 34px 40px;display:grid;grid-template-columns:210px 1fr 400px;gap:34px;align-items:start">
+
+    <!-- LEFT: assembly checklist -->
+    <aside data-rail style="position:sticky;top:24px">
+      <div style="font:700 10.5px/1 'Archivo';letter-spacing:.22em;text-transform:uppercase;color:#5c5647;margin-bottom:16px">Assembly&nbsp;Spec</div>
+      <ol style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px">
+        <sc-for list="{{ dots }}" as="d" hint-placeholder-count="6">
+          <li style="{{ d.rowStyle }}">
+            <span style="{{ d.numStyle }}">{{ d.n }}</span>
+            <span style="{{ d.labelStyle }}">{{ d.label }}</span>
+            <sc-if value="{{ d.done }}" hint-placeholder-val="{{ false }}"><span style="margin-left:auto;color:#20488F;font-weight:800">✓</span></sc-if>
+          </li>
+        </sc-for>
+      </ol>
+    </aside>
+
+    <!-- CENTER: question -->
+    <div>
+      <div key="{{ stepKey }}" style="animation:sfUp .5s cubic-bezier(.16,1,.3,1) both">
+        <div style="display:flex;align-items:baseline;gap:14px;margin-bottom:8px">
+          <span style="font:700 11px/1 'Archivo';letter-spacing:.24em;text-transform:uppercase;color:#20488F">{{ q.kicker }}</span>
+          <span style="flex:1;height:1.5px;background:#17140E;opacity:.25"></span>
+        </div>
+        <h2 style="font-family:'Anton';font-weight:400;font-size:clamp(34px,4.6vw,58px);line-height:.94;text-transform:uppercase;margin:0 0 10px;text-wrap:balance">{{ q.title }}</h2>
+        <p style="margin:0 0 26px;font-size:15.5px;line-height:1.5;color:#4a4438;max-width:520px">{{ q.sub }}</p>
+        <sc-if value="{{ showEventSearch }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex;align-items:center;gap:12px;margin:0 0 16px;flex-wrap:wrap">
+            <div style="position:relative;flex:1;min-width:220px">
+              <span style="position:absolute;left:15px;top:50%;transform:translateY(-50%);font-size:16px;color:#8a8271">⌕</span>
+              <input value="{{ eventQuery }}" onChange="{{ onEventSearch }}" placeholder="Search 30 events — try &quot;400&quot;, &quot;jump&quot;, &quot;marathon&quot;" style="width:100%;font:600 14px/1 'Archivo';color:#17140E;background:#F3ECDA;border:1.5px solid #17140E;border-radius:3px;padding:14px 14px 14px 40px;outline:none" style-focus="border-color:#20488F;box-shadow:3px 3px 0 rgba(23,20,14,.85)" />
+            </div>
+            <span style="font:700 11px/1 'Archivo';letter-spacing:.14em;text-transform:uppercase;color:#5c5647">{{ eventCount }} events</span>
+          </div>
+        </sc-if>
+        <div data-optgrid style="{{ q.gridStyle }}">
+          <sc-for list="{{ q.options }}" as="opt" hint-placeholder-count="4">
+            <button onClick="{{ opt.choose }}" style="{{ opt.cardStyle }}" style-hover="border-color:#20488F;transform:translateY(-3px);box-shadow:5px 5px 0 rgba(23,20,14,.9)">
+              <sc-if value="{{ opt.on }}" hint-placeholder-val="{{ false }}">
+                <span style="position:absolute;top:9px;right:10px;width:22px;height:22px;border-radius:50%;background:#20488F;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800">✓</span>
+                <span style="position:absolute;inset:0;border:2.5px solid #20488F;border-radius:3px;pointer-events:none"></span>
+              </sc-if>
+              <span style="{{ opt.idxStyle }}">{{ opt.idx }}</span>
+              <span style="display:block;font:800 18px/1.05 'Archivo';text-transform:uppercase;letter-spacing:.01em;margin-top:auto">{{ opt.label }}</span>
+              <span style="display:block;font:500 12px/1.3 'Archivo';color:#6b6555;margin-top:5px">{{ opt.meta }}</span>
+            </button>
+          </sc-for>
+        </div>
+        <sc-if value="{{ eventEmpty }}" hint-placeholder-val="{{ false }}">
+          <div style="border:1.5px dashed #17140E;border-radius:3px;padding:26px;text-align:center;color:#6b6555;font:600 13.5px/1.5 'Archivo';margin-top:6px">No event matches your search. Try a distance like <strong>800</strong>, or a family like <strong>jump</strong> or <strong>throw</strong>.</div>
+        </sc-if>
+      </div>
+
+      <!-- controls -->
+      <div style="display:flex;align-items:center;gap:16px;margin-top:34px;padding-top:22px;border-top:1.5px solid #17140E">
+        <button onClick="{{ back }}" style="background:transparent;border:1.5px solid #17140E;color:#17140E;font:700 12px/1 'Archivo';letter-spacing:.1em;text-transform:uppercase;padding:14px 20px;border-radius:3px;cursor:pointer;transition:all .2s ease" style-hover="background:#17140E;color:#EDE3CE">← {{ backLabel }}</button>
+        <button data-magnetic disabled="{{ contDisabled }}" onClick="{{ next }}" style="{{ contStyle }}">
+          <span>{{ contLabel }}</span><span style="font-size:18px">→</span>
+        </button>
+        <span style="margin-left:auto;font:700 11px/1 'Archivo';letter-spacing:.16em;text-transform:uppercase;color:#5c5647">{{ progressLabel }}</span>
+      </div>
+    </div>
+
+    <!-- RIGHT: assembling shoe stage -->
+    <aside data-stage style="position:sticky;top:24px">
+      <div style="position:relative;background:#F3ECDA;border:1.5px solid #17140E;border-radius:4px;box-shadow:7px 7px 0 #17140E;overflow:hidden">
+        <div style="position:absolute;inset:0;background:radial-gradient(circle,#17140E 1px,transparent 1.2px) 0 0/12px 12px;opacity:.07"></div>
+        <div style="position:relative;display:flex;justify-content:space-between;align-items:baseline;padding:14px 16px 4px">
+          <span style="font:700 10px/1 'Archivo';letter-spacing:.2em;text-transform:uppercase;color:#5c5647">Live Build</span>
+          <span style="font-family:'Anton';font-size:24px;color:#20488F">{{ builtCount }}<span style="font-size:14px;color:#5c5647">/6</span></span>
+        </div>
+        <svg viewBox="0 0 560 330" style="position:relative;width:100%;height:auto;display:block;padding:6px 10px 2px">
+          <g style="{{ shoeP3 }}"><path d="M96,214 C92,178 100,148 116,126 C124,115 141,118 142,133 L147,210 C147,215 143,218 138,218 L108,218 C100,218 96,217 96,214 Z" fill="#141109"/></g>
+          <g style="{{ shoeP4 }}"><path d="M96,214 C96,166 152,118 252,110 C350,102 432,120 488,142 C502,148 508,160 502,176 L488,206 C486,212 480,216 473,216 L108,218 C100,218 96,217 96,214 Z" fill="#20488F"/></g>
+          <g style="{{ shoeP5 }}"><path d="M150,206 C240,180 342,170 456,196 L452,210 C344,186 246,196 158,222 Z" fill="#D6462C"/><circle cx="300" cy="150" r="3.4" fill="#F3ECDA"/><circle cx="332" cy="146" r="3.4" fill="#F3ECDA"/><circle cx="364" cy="145" r="3.4" fill="#F3ECDA"/><path d="M296,152 L336,142 M328,150 L368,141" stroke="#F3ECDA" stroke-width="2.4" stroke-linecap="round"/></g>
+          <g style="{{ shoeP2 }}"><path d="M84,222 L494,214 C502,213 507,219 504,227 L497,241 L98,247 C90,247 84,243 84,237 Z" fill="#EFE6D2" stroke="#141109" stroke-width="1.4"/></g>
+          <g style="{{ shoeP0 }}"><path d="M78,249 L500,239 C513,237 519,245 515,254 L507,271 C504,278 497,282 489,282 L120,284 C102,284 86,277 78,265 Z" fill="#141109"/></g>
+          <g style="{{ shoeP1 }}" fill="#20488F"><path d="M363,282 l9,0 l-4.5,20 Z"/><path d="M399,282 l9,0 l-4.5,20 Z"/><path d="M435,281 l9,0 l-4.5,20 Z"/><path d="M471,280 l9,0 l-4.5,20 Z"/></g>
+        </svg>
+        <div style="position:relative;border-top:1.5px solid #17140E;padding:12px 16px;min-height:58px">
+          <div style="font:700 10px/1 'Archivo';letter-spacing:.18em;text-transform:uppercase;color:#5c5647;margin-bottom:5px">Now fitting</div>
+          <div key="{{ capName }}" style="font:800 15px/1.15 'Archivo';text-transform:uppercase;animation:sfIn .4s ease both">{{ capName }}</div>
+        </div>
+      </div>
+      <p style="font:500 12px/1.5 'Archivo';color:#6b6555;margin:14px 2px 0;text-align:center">Each answer locks another piece of your spike into place.</p>
+    </aside>
+  </section>
+</main>
+</sc-if>
+
+<!-- =========================================================
+     LOADING
+========================================================= -->
+<sc-if value="{{ isLoading }}" hint-placeholder-val="{{ false }}">
+<main style="position:relative;z-index:10;min-height:74vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 34px;text-align:center">
+  <div style="font:700 11px/1 'Archivo';letter-spacing:.3em;text-transform:uppercase;color:#20488F;margin-bottom:8px">Calculating your match</div>
+  <div style="position:relative;width:min(440px,86vw);margin:10px 0 6px">
+    <svg viewBox="0 0 560 330" style="width:100%;height:auto;display:block">
+      <g style="{{ shoeP3 }}"><path d="M96,214 C92,178 100,148 116,126 C124,115 141,118 142,133 L147,210 C147,215 143,218 138,218 L108,218 C100,218 96,217 96,214 Z" fill="#141109"/></g>
+      <g style="{{ shoeP4 }}"><path d="M96,214 C96,166 152,118 252,110 C350,102 432,120 488,142 C502,148 508,160 502,176 L488,206 C486,212 480,216 473,216 L108,218 C100,218 96,217 96,214 Z" fill="#20488F"/></g>
+      <g style="{{ shoeP5 }}"><path d="M150,206 C240,180 342,170 456,196 L452,210 C344,186 246,196 158,222 Z" fill="#D6462C"/><circle cx="300" cy="150" r="3.4" fill="#F3ECDA"/><circle cx="332" cy="146" r="3.4" fill="#F3ECDA"/><circle cx="364" cy="145" r="3.4" fill="#F3ECDA"/></g>
+      <g style="{{ shoeP2 }}"><path d="M84,222 L494,214 C502,213 507,219 504,227 L497,241 L98,247 C90,247 84,243 84,237 Z" fill="#EFE6D2" stroke="#141109" stroke-width="1.4"/></g>
+      <g style="{{ shoeP0 }}"><path d="M78,249 L500,239 C513,237 519,245 515,254 L507,271 C504,278 497,282 489,282 L120,284 C102,284 86,277 78,265 Z" fill="#141109"/></g>
+      <g style="{{ shoeP1 }}" fill="#20488F"><path d="M363,282 l9,0 l-4.5,20 Z"/><path d="M399,282 l9,0 l-4.5,20 Z"/><path d="M435,281 l9,0 l-4.5,20 Z"/><path d="M471,280 l9,0 l-4.5,20 Z"/></g>
+    </svg>
+  </div>
+  <div style="font-family:'Anton';font-size:clamp(40px,7vw,72px);line-height:1;color:#17140E">{{ loadPct }}<span style="color:#20488F">%</span></div>
+  <div key="{{ loadMsg }}" style="font:600 13px/1 'Archivo';letter-spacing:.06em;color:#5c5647;margin-top:6px;animation:sfIn .4s ease both">{{ loadMsg }}</div>
+</main>
+</sc-if>
+
+<!-- =========================================================
+     RESULTS
+========================================================= -->
+<sc-if value="{{ isResults }}" hint-placeholder-val="{{ false }}">
+<main style="position:relative;z-index:10;max-width:1280px;margin:0 auto;padding:34px 34px 70px">
+
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px;border-bottom:1.5px solid #17140E;padding-bottom:20px">
+    <div>
+      <div style="font:700 11px/1 'Archivo';letter-spacing:.26em;text-transform:uppercase;color:#20488F;margin-bottom:10px">The Program · Your Matches</div>
+      <h2 style="font-family:'Anton';font-weight:400;font-size:clamp(40px,6vw,84px);line-height:.9;text-transform:uppercase;margin:0">Race&nbsp;day,<br>solved.</h2>
+    </div>
+    <div style="max-width:340px">
+      <p style="margin:0 0 12px;font-size:14px;line-height:1.5;color:#4a4438">Built from your answers. Scored on event fit, surface, stride, budget, and protection.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:7px">
+        <sc-for list="{{ answerChips }}" as="c" hint-placeholder-count="5">
+          <span style="font:600 10.5px/1 'Archivo';letter-spacing:.08em;text-transform:uppercase;background:#F3ECDA;border:1.5px solid #17140E;padding:6px 9px;border-radius:2px">{{ c }}</span>
+        </sc-for>
+        <button onClick="{{ editQuiz }}" style="font:700 10.5px/1 'Archivo';letter-spacing:.08em;text-transform:uppercase;background:#17140E;color:#EDE3CE;border:none;padding:6px 10px;border-radius:2px;cursor:pointer">Edit ✎</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- toolbar -->
+  <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;padding:18px 0">
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <span style="font:700 10px/1 'Archivo';letter-spacing:.18em;text-transform:uppercase;color:#5c5647">Sort</span>
+      <sc-for list="{{ sortChips }}" as="s" hint-placeholder-count="3">
+        <button onClick="{{ s.pick }}" style="{{ s.style }}">{{ s.label }}</button>
+      </sc-for>
+      <span style="width:1.5px;height:22px;background:#17140E;opacity:.25;margin:0 4px"></span>
+      <span style="font:700 10px/1 'Archivo';letter-spacing:.18em;text-transform:uppercase;color:#5c5647">Brand</span>
+      <sc-for list="{{ brandChips }}" as="b" hint-placeholder-count="3">
+        <button onClick="{{ b.pick }}" style="{{ b.style }}">{{ b.label }}</button>
+      </sc-for>
+    </div>
+    <button data-magnetic onClick="{{ openCompare }}" style="{{ compareBtnStyle }}">
+      <span>{{ compareBtnLabel }}</span>
+    </button>
+  </div>
+
+  <sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ false }}">
+    <div style="border:1.5px dashed #17140E;border-radius:4px;padding:60px 30px;text-align:center;margin-top:10px">
+      <div style="font-family:'Anton';font-size:52px;color:#d8cdb4;line-height:1">∅</div>
+      <h3 style="font:800 20px/1.2 'Archivo';text-transform:uppercase;margin:12px 0 6px">No spikes in that lane</h3>
+      <p style="margin:0 0 18px;color:#6b6555;font-size:14px">That brand filter cleared the board. Reset to see every match.</p>
+      <button onClick="{{ clearBrand }}" style="background:#20488F;color:#F3ECDA;border:none;font:700 12px/1 'Archivo';letter-spacing:.1em;text-transform:uppercase;padding:13px 20px;border-radius:3px;cursor:pointer">Show all matches</button>
+    </div>
+  </sc-if>
+
+  <div style="{{ gridStyle }}">
+    <sc-for list="{{ cards }}" as="r" hint-placeholder-count="4">
+      <article style="{{ r.cardStyle }}" style-hover="transform:translateY(-4px);box-shadow:8px 10px 0 #17140E">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;padding:16px 18px 8px">
+          <div>
+            <span style="font:700 10px/1 'Archivo';letter-spacing:.18em;text-transform:uppercase;color:#5c5647">Rank {{ r.rank }}</span>
+            <div style="font:800 11px/1 'Archivo';letter-spacing:.14em;text-transform:uppercase;color:#20488F;margin-top:5px">{{ r.role }}</div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-family:'Anton';font-size:38px;line-height:.85;color:#D6462C">{{ r.score }}<span style="font-size:16px">%</span></div>
+            <div style="font:700 9px/1 'Archivo';letter-spacing:.16em;text-transform:uppercase;color:#5c5647">Match</div>
+          </div>
+        </div>
+        <div style="{{ r.artStyle }}">
+          <img src="{{ r.img }}" alt="{{ r.model }}" loading="lazy" style="width:100%;height:192px;object-fit:cover;object-position:center 48%;display:block;filter:sepia(.2) saturate(.96) contrast(1.03)" />
+          <span style="position:absolute;left:10px;bottom:9px;z-index:4;font:700 8.5px/1 'Archivo';letter-spacing:.16em;text-transform:uppercase;color:#5c5647;background:#F3ECDA;border:1px solid #17140E;padding:4px 7px;border-radius:2px">Field sample</span>
+          <span style="{{ r.figStyle }}">{{ r.figNo }}</span>
+        </div>
+        <div style="padding:14px 18px 4px">
+          <div style="font:600 10.5px/1 'Archivo';letter-spacing:.14em;text-transform:uppercase;color:#6b6555">{{ r.brand }}</div>
+          <h3 style="font-family:'Anton';font-weight:400;font-size:30px;line-height:.95;text-transform:uppercase;margin:3px 0 0">{{ r.model }}</h3>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(5,1fr);border-top:1.5px solid #17140E;border-bottom:1.5px solid #17140E;margin:12px 0 0">
+          <div style="padding:9px 6px;border-right:1px solid rgba(23,20,14,.18);text-align:center"><div style="font-family:'Anton';font-size:19px;line-height:1">{{ r.pins }}</div><div style="font:700 8px/1 'Archivo';letter-spacing:.1em;text-transform:uppercase;color:#6b6555;margin-top:3px">Pins</div></div>
+          <div style="padding:9px 6px;border-right:1px solid rgba(23,20,14,.18);text-align:center"><div style="font-family:'Anton';font-size:19px;line-height:1">{{ r.weight }}</div><div style="font:700 8px/1 'Archivo';letter-spacing:.1em;text-transform:uppercase;color:#6b6555;margin-top:3px">Weight</div></div>
+          <div style="padding:9px 6px;border-right:1px solid rgba(23,20,14,.18);text-align:center"><div style="font-family:'Anton';font-size:19px;line-height:1">{{ r.drop }}</div><div style="font:700 8px/1 'Archivo';letter-spacing:.1em;text-transform:uppercase;color:#6b6555;margin-top:3px">Drop</div></div>
+          <div style="padding:9px 6px;border-right:1px solid rgba(23,20,14,.18);text-align:center"><div style="font-family:'Anton';font-size:14px;line-height:1.05;padding-top:3px">{{ r.plateShort }}</div><div style="font:700 8px/1 'Archivo';letter-spacing:.1em;text-transform:uppercase;color:#6b6555;margin-top:3px">Plate</div></div>
+          <div style="padding:9px 6px;text-align:center"><div style="font-family:'Anton';font-size:14px;line-height:1.05;padding-top:3px">{{ r.cushion }}</div><div style="font:700 8px/1 'Archivo';letter-spacing:.1em;text-transform:uppercase;color:#6b6555;margin-top:3px">Cushion</div></div>
+        </div>
+        <div style="padding:14px 18px 4px">
+          <div style="font:700 9px/1 'Archivo';letter-spacing:.16em;text-transform:uppercase;color:#20488F;margin-bottom:6px">Why this fits you</div>
+          <p style="margin:0;font-size:13.5px;line-height:1.5;color:#37322a">{{ r.why }}</p>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px 16px;margin-top:6px">
+          <div style="font-family:'Anton';font-size:30px;line-height:1">{{ r.price }}</div>
+          <button onClick="{{ r.toggle }}" style="{{ r.cmpStyle }}">{{ r.cmpLabel }}</button>
+        </div>
+      </article>
+    </sc-for>
+  </div>
+
+  <div style="text-align:center;margin-top:50px">
+    <button onClick="{{ restart }}" style="background:transparent;border:1.5px solid #17140E;color:#17140E;font:700 12px/1 'Archivo';letter-spacing:.12em;text-transform:uppercase;padding:16px 26px;border-radius:3px;cursor:pointer;transition:all .25s ease" style-hover="background:#17140E;color:#EDE3CE">↻ Run the fitting again</button>
+  </div>
+</main>
+
+<!-- COMPARE OVERLAY -->
+<sc-if value="{{ comparing }}" hint-placeholder-val="{{ false }}">
+<div style="position:fixed;inset:0;z-index:9999;background:rgba(23,20,14,.55);display:flex;align-items:flex-start;justify-content:center;padding:34px 20px;overflow:auto;animation:sfIn .3s ease both" onClick="{{ closeCompare }}">
+  <div onClick="{{ stop }}" style="width:min(980px,100%);background:#EDE3CE;border:1.5px solid #17140E;border-radius:5px;box-shadow:0 30px 80px rgba(0,0,0,.4);animation:sfUp .4s cubic-bezier(.16,1,.3,1) both">
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:20px 24px;border-bottom:1.5px solid #17140E;background:#17140E;color:#EDE3CE">
+      <div style="font-family:'Anton';font-size:26px;text-transform:uppercase;letter-spacing:.02em">Side&nbsp;by&nbsp;Side</div>
+      <button onClick="{{ closeCompare }}" style="background:transparent;border:1.5px solid #EDE3CE;color:#EDE3CE;font:700 11px/1 'Archivo';letter-spacing:.12em;text-transform:uppercase;padding:9px 14px;border-radius:2px;cursor:pointer">Close ✕</button>
+    </div>
+    <div style="overflow-x:auto">
+      <table style="width:100%;border-collapse:collapse;min-width:520px">
+        <thead>
+          <tr>
+            <th style="text-align:left;padding:16px 18px;font:700 10px/1 'Archivo';letter-spacing:.18em;text-transform:uppercase;color:#5c5647;border-bottom:1.5px solid #17140E;width:150px">Spec</th>
+            <sc-for list="{{ compareHead }}" as="h" hint-placeholder-count="2">
+              <th style="text-align:left;padding:16px 18px;border-bottom:1.5px solid #17140E;border-left:1px solid rgba(23,20,14,.18)"><div style="font:600 10px/1 'Archivo';letter-spacing:.12em;text-transform:uppercase;color:#6b6555">{{ h.brand }}</div><div style="font-family:'Anton';font-size:22px;text-transform:uppercase;line-height:1;margin-top:3px">{{ h.model }}</div></th>
+            </sc-for>
+          </tr>
+        </thead>
+        <tbody>
+          <sc-for list="{{ compareRows }}" as="row" hint-placeholder-count="7">
+            <tr style="{{ row.trStyle }}">
+              <td style="padding:13px 18px;font:700 10px/1 'Archivo';letter-spacing:.14em;text-transform:uppercase;color:#5c5647">{{ row.label }}</td>
+              <sc-for list="{{ row.cells }}" as="cell" hint-placeholder-count="2">
+                <td style="padding:13px 18px;border-left:1px solid rgba(23,20,14,.18);font:600 14px/1.3 'Archivo';{{ cell.extra }}">{{ cell.v }}</td>
+              </sc-for>
+            </tr>
+          </sc-for>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+</sc-if>
+</sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:&quot;100%&quot;,&quot;height&quot;:860},&quot;showGrain&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Texture&quot;},&quot;showMarquee&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Landing&quot;},&quot;autoAdvance&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Quiz flow&quot;}}">
+class Component extends DCLogic {
+  state = { view:'landing', step:0, answers:{}, sortBy:'match', brand:'all', compareIds:[], comparing:false, loadPct:0, eventQuery:'' };
+  onEventSearch = (e) => this.setState({ eventQuery: e.target.value });
+  eventCat(id){ const o = this.steps[0].options.find(o => o.id === id); return o ? o.cat : null; }
+
+  steps = [
+    { key:'event', kicker:'Question 01 / 06', title:'What do you run, jump, or throw?', sub:'Thirty events, from the 60m to the marathon. Search or scroll to find yours — it sets the plate and the whole geometry.', part:'The spike plate', cols:4, options:[
+      {id:'60m',label:'60m',meta:'Indoor sprint',cat:'sprints'},
+      {id:'100m',label:'100m',meta:'The blue riband',cat:'sprints'},
+      {id:'200m',label:'200m',meta:'Half-lap sprint',cat:'sprints'},
+      {id:'400m',label:'400m',meta:'One-lap sprint',cat:'sprints'},
+      {id:'60mh',label:'60m Hurdles',meta:'Indoor barriers',cat:'hurdles'},
+      {id:'100mh',label:'100m Hurdles',meta:'Sprint hurdles',cat:'hurdles'},
+      {id:'110mh',label:'110m Hurdles',meta:'Sprint hurdles',cat:'hurdles'},
+      {id:'400mh',label:'400m Hurdles',meta:'Long hurdles',cat:'hurdles'},
+      {id:'steeple',label:'3000m Steeple',meta:'Barriers + water',cat:'distance'},
+      {id:'800m',label:'800m',meta:'Two-lap',cat:'middle'},
+      {id:'1500m',label:'1500m',meta:'Metric mile',cat:'middle'},
+      {id:'mile',label:'Mile',meta:'1609m',cat:'middle'},
+      {id:'3000m',label:'3000m',meta:'7.5 laps',cat:'middle'},
+      {id:'5000m',label:'5000m',meta:'12.5 laps',cat:'distance'},
+      {id:'10000m',label:'10,000m',meta:'25 laps',cat:'distance'},
+      {id:'lj',label:'Long Jump',meta:'Horizontal',cat:'jumps'},
+      {id:'tj',label:'Triple Jump',meta:'Hop-step-jump',cat:'jumps'},
+      {id:'hj',label:'High Jump',meta:'Vertical',cat:'jumps'},
+      {id:'pv',label:'Pole Vault',meta:'Vault + pole',cat:'jumps'},
+      {id:'shot',label:'Shot Put',meta:'Glide / spin',cat:'throws'},
+      {id:'discus',label:'Discus',meta:'Rotational',cat:'throws'},
+      {id:'hammer',label:'Hammer',meta:'Wire + turns',cat:'throws'},
+      {id:'javelin',label:'Javelin',meta:'Run-up throw',cat:'throws'},
+      {id:'hept',label:'Heptathlon',meta:'7 events',cat:'jumps'},
+      {id:'dec',label:'Decathlon',meta:'10 events',cat:'jumps'},
+      {id:'5k',label:'5K Road',meta:'Road race',cat:'road'},
+      {id:'10k',label:'10K Road',meta:'Road race',cat:'road'},
+      {id:'half',label:'Half Marathon',meta:'21.1 km',cat:'road'},
+      {id:'marathon',label:'Marathon',meta:'42.2 km',cat:'road'},
+      {id:'xc',label:'Cross Country',meta:'Grass · mud · trail',cat:'xc'} ]},
+    { key:'surface', kicker:'Question 02 / 06', title:'Where do you compete?', sub:'The surface decides your outsole — pins, or no pins at all.', part:'Spikes & outsole', cols:2, options:[
+      {id:'mondo',label:'Synthetic Track',meta:'Mondo / latex'},
+      {id:'rubber',label:'Older Track',meta:'Rubber / cinder'},
+      {id:'road',label:'Road & Pavement',meta:'Asphalt / concrete'},
+      {id:'terrain',label:'Grass & Trail',meta:'Turf · dirt · mud'} ]},
+    { key:'experience', kicker:'Question 03 / 06', title:'How far into it are you?', sub:'We tune stiffness and cushioning to how hard and how often you race.', part:'The midsole', cols:2, options:[
+      {id:'new',label:'New to Spikes',meta:'First season'},
+      {id:'rec',label:'Recreational',meta:'Weekend racer'},
+      {id:'comp',label:'Competitive',meta:'HS / Club level'},
+      {id:'elite',label:'Collegiate +',meta:'Podium chaser'} ]},
+    { key:'strike', kicker:'Question 04 / 06', title:'How does your foot land?', sub:'Strike and gait steer the heel geometry, the drop, and support.', part:'Heel & counter', cols:2, options:[
+      {id:'fore',label:'Forefoot',meta:'Toe-first · neutral'},
+      {id:'mid',label:'Midfoot',meta:'Balanced · neutral'},
+      {id:'heel',label:'Heel Strike',meta:'Tends to overpronate'},
+      {id:'sup',label:'Supinate',meta:'High arch · underpronate'} ]},
+    { key:'budget', kicker:'Question 05 / 06', title:'Where\u2019s your budget?', sub:'Honest numbers, honest matches. Great spikes live at every price.', part:'The upper', cols:2, options:[
+      {id:'b1',label:'Under $90',meta:'Starter'},
+      {id:'b2',label:'$90 – 140',meta:'Mid-range'},
+      {id:'b3',label:'$140 – 200',meta:'Performance'},
+      {id:'b4',label:'$200 +',meta:'No compromise'} ]},
+    { key:'injury', kicker:'Question 06 / 06', title:'Anything we should protect?', sub:'Tell us where it hurts and we\u2019ll bias toward cushioning and support.', part:'Cushioning & collar', cols:3, options:[
+      {id:'none',label:'All Clear',meta:'No current issues'},
+      {id:'achilles',label:'Achilles / Calf',meta:'Mind the drop'},
+      {id:'shin',label:'Shin Splints',meta:'Need dampening'},
+      {id:'arch',label:'Plantar / Arch',meta:'Support the arch'},
+      {id:'knee',label:'Knee',meta:'Cushion the impact'},
+      {id:'multi',label:'A Few Things',meta:'Play it safe'} ]}
+  ];
+
+  U(id){ return 'https://images.unsplash.com/photo-'+id+'?fm=jpg&q=70&w=640&h=460&fit=crop&auto=format'; }
+  catalog = [
+    {id:'nk-maxfly',brand:'Nike',model:'Air Zoom Maxfly 2',role:'Sprint Spike',price:200,weight:132,pins:9,plate:'Carbon Air Zoom',drop:3,cushion:'Moderate',events:['sprints'],surfaces:['mondo','rubber'],body:'#20488F',acc:'#D6462C',img:'assets/ref2.png',pitch:'An Air Zoom pod and full carbon plate built to hold top-end speed down the straight.'},
+    {id:'ad-primesp',brand:'adidas',model:'Adizero Prime SP2',role:'Sprint Spike',price:200,weight:132,pins:8,plate:'Carbon EnergyRods',drop:3,cushion:'Minimal',events:['sprints'],surfaces:['mondo','rubber'],body:'#16336B',acc:'#20488F',img:'assets/spike-red.png',pitch:'Stiff EnergyRods and a locked-down upper for pure block-to-tape sprinting.'},
+    {id:'nk-jafly',brand:'Nike',model:'Ja Fly 4',role:'Sprint / Hurdle',price:70,weight:118,pins:8,plate:'Pebax',drop:2,cushion:'Minimal',events:['sprints','hurdles'],surfaces:['mondo','rubber'],body:'#141109',acc:'#D6462C',img:'https://images.unsplash.com/photo-1600185365926-3a2ce3cdb9eb?fm=jpg&q=70&w=640&h=460&fit=crop&auto=format',pitch:'A featherweight, affordable sprint spike that punches well above its price.'},
+    {id:'pu-tokyo',brand:'Puma',model:'evoSPEED Tokyo Sprint',role:'Sprint Spike',price:170,weight:130,pins:8,plate:'Carbon',drop:3,cushion:'Minimal',events:['sprints'],surfaces:['mondo','rubber'],body:'#2E6E63',acc:'#C9962B',img:'assets/ref1.png',pitch:'A springy carbon plate tuned for aggressive forefoot sprinters.'},
+    {id:'nk-rival',brand:'Nike',model:'Zoom Rival Multi',role:'Multi-Event',price:70,weight:190,pins:8,plate:'Pebax',drop:5,cushion:'Firm',events:['sprints','hurdles','jumps'],surfaces:['mondo','rubber'],body:'#141109',acc:'#2E6E63',img:'assets/spike-nike-rival.png',pitch:'One do-it-all spike for sprints, hurdles and the horizontal jumps \u2014 the team-kit workhorse.'},
+    {id:'ad-ambition',brand:'adidas',model:'Adizero Ambition',role:'Hurdle / 400m',price:110,weight:165,pins:6,plate:'Glass-fibre',drop:5,cushion:'Moderate',events:['hurdles','sprints','middle'],surfaces:['mondo','rubber'],body:'#20488F',acc:'#C9962B',img:'assets/ref7.png',pitch:'Enough plate for the long hurdles, enough give to survive the home straight of a 400.'},
+    {id:'nk-victory',brand:'Nike',model:'Zoom Victory 6',role:'Middle-Distance',price:150,weight:96,pins:6,plate:'Pebax',drop:4,cushion:'Minimal',events:['middle','distance'],surfaces:['mondo','rubber'],body:'#20488F',acc:'#C9962B',img:'assets/spike-blue.png',pitch:'A ZoomX-cushioned plate that stays light enough to kick off the final bend.'},
+    {id:'nb-mdx',brand:'New Balance',model:'FuelCell MD-X',role:'Middle-Distance',price:160,weight:120,pins:6,plate:'Carbon FuelCell',drop:4,cushion:'Moderate',events:['middle','distance'],surfaces:['mondo','rubber'],body:'#141109',acc:'#D6462C',img:'https://images.unsplash.com/photo-1539185441755-769473a23570?fm=jpg&q=70&w=640&h=460&fit=crop&auto=format',pitch:'FuelCell foam over a carbon plate for a rolling, resilient 800/1500 ride.'},
+    {id:'pu-dist',brand:'Puma',model:'evoSPEED Distance',role:'Middle-Distance',price:120,weight:140,pins:6,plate:'Carbon',drop:5,cushion:'Moderate',events:['middle','distance'],surfaces:['mondo'],body:'#3C5A3A',acc:'#C9962B',img:'https://images.unsplash.com/photo-1562183241-b937e95585b6?fm=jpg&q=70&w=640&h=460&fit=crop&auto=format',pitch:'A forgiving plate and cushioned heel for athletes doubling across distances.'},
+    {id:'nk-dragonfly',brand:'Nike',model:'Dragonfly 2',role:'Distance Spike',price:150,weight:130,pins:6,plate:'Pebax + ZoomX',drop:5,cushion:'Moderate',events:['distance','middle'],surfaces:['mondo'],body:'#2E6E63',acc:'#EFE6D2',img:'assets/ref9.png',pitch:'ZoomX under a translucent plate \u2014 the go-to for the 5000m and 10,000m.'},
+    {id:'ad-avanti',brand:'adidas',model:'Adizero Avanti TYO',role:'Distance Spike',price:140,weight:135,pins:6,plate:'EnergyRods',drop:5,cushion:'Moderate',events:['distance','middle'],surfaces:['mondo'],body:'#C1402A',acc:'#20488F',img:'https://images.unsplash.com/photo-1560769629-975ec94e6a86?fm=jpg&q=70&w=640&h=460&fit=crop&auto=format',pitch:'Lightstrike foam and rods that keep the legs fresh deep into the longer races.'},
+    {id:'nb-ldx',brand:'New Balance',model:'SuperComp LD-X',role:'Distance Spike',price:150,weight:128,pins:6,plate:'Carbon',drop:6,cushion:'Moderate',events:['distance','middle'],surfaces:['mondo'],body:'#16336B',acc:'#D6462C',img:'https://images.unsplash.com/photo-1551107696-a4b0c5a0d9a2?fm=jpg&q=70&w=640&h=460&fit=crop&auto=format',pitch:'A tall, legal foam stack over carbon for a plush long-distance spike ride.'},
+    {id:'nk-hj',brand:'Nike',model:'High Jump Elite',role:'Jumps Spike',price:130,weight:240,pins:11,plate:'Rigid full',drop:8,cushion:'Firm',events:['jumps'],surfaces:['mondo','rubber'],body:'#6D3A5D',acc:'#C9962B',img:'https://images.unsplash.com/photo-1512374382149-233c42b6a83b?fm=jpg&q=70&w=640&h=460&fit=crop&auto=format',pitch:'A rigid heel plate and dense pin array to plant and convert speed into height.'},
+    {id:'nk-tj',brand:'Nike',model:'Triple Jump Elite 2',role:'Jumps Spike',price:130,weight:250,pins:11,plate:'Rigid full',drop:7,cushion:'Firm',events:['jumps'],surfaces:['mondo','rubber'],body:'#141109',acc:'#D6462C',img:'https://images.unsplash.com/photo-1543508282-6319a3e2621f?fm=jpg&q=70&w=640&h=460&fit=crop&auto=format',pitch:'Built to survive the hop-step-jump pounding with a locked, protective ride.'},
+    {id:'ad-jumpstar',brand:'adidas',model:'Jumpstar',role:'Jumps Spike',price:80,weight:260,pins:11,plate:'TPU plate',drop:8,cushion:'Firm',events:['jumps'],surfaces:['mondo','rubber'],body:'#20488F',acc:'#C9962B',img:'https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?fm=jpg&q=70&w=640&h=460&fit=crop&auto=format',pitch:'A versatile, budget jumps spike that spans long, triple and high jump.'},
+    {id:'nk-rot',brand:'Nike',model:'Zoom Rotational 6',role:'Throws Shoe',price:110,weight:300,pins:0,plate:'Flat pivot',drop:0,cushion:'Minimal',events:['throws'],surfaces:['mondo','rubber'],body:'#141109',acc:'#D6462C',img:'https://images.unsplash.com/photo-1491553895911-0055eca6402d?fm=jpg&q=70&w=640&h=460&fit=crop&auto=format',pitch:'A smooth, low-friction pivot sole for the discus and shot circle.'},
+    {id:'ad-shotput',brand:'adidas',model:'Adizero Shotput',role:'Throws Shoe',price:90,weight:330,pins:0,plate:'Flat pivot',drop:0,cushion:'Firm',events:['throws'],surfaces:['mondo','rubber'],body:'#16336B',acc:'#C9962B',img:'https://images.unsplash.com/photo-1605348532760-6753d2c43329?fm=jpg&q=70&w=640&h=460&fit=crop&auto=format',pitch:'A stable, flat platform and locked heel for glide and rotational putters.'},
+    {id:'nk-vapor',brand:'Nike',model:'Vaporfly 3',role:'Road Racer',price:260,weight:196,pins:0,plate:'Full carbon',drop:8,cushion:'Max',events:['road'],surfaces:['road'],body:'#16336B',acc:'#D6462C',img:'assets/ref8.png',pitch:'ZoomX foam and a full carbon plate \u2014 the benchmark 5k-to-marathon super-shoe.'},
+    {id:'ad-adiospro',brand:'adidas',model:'Adizero Adios Pro 3',role:'Road Racer',price:250,weight:215,pins:0,plate:'EnergyRods 2.0',drop:6,cushion:'Max',events:['road'],surfaces:['road'],body:'#20488F',acc:'#D6462C',img:'https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?fm=jpg&q=70&w=640&h=460&fit=crop&auto=format',pitch:'Lightstrike Pro and carbon rods that mimic the bones of the foot for the marathon.'},
+    {id:'as-metaspeed',brand:'ASICS',model:'Metaspeed Sky Paris',role:'Road Racer',price:250,weight:180,pins:0,plate:'Full carbon',drop:5,cushion:'Max',events:['road'],surfaces:['road'],body:'#2E6E63',acc:'#20488F',img:'assets/ref4.png',pitch:'FF Turbo foam tuned for stride-length runners who want to fly the flats.'},
+    {id:'sa-endorphin',brand:'Saucony',model:'Endorphin Pro 4',role:'Road Racer',price:225,weight:210,pins:0,plate:'Full carbon',drop:8,cushion:'Max',events:['road'],surfaces:['road'],body:'#6D3A5D',acc:'#C9962B',img:'assets/ref5.png',pitch:'PWRRUN PB and a SpeedRoll geometry that tips you forward mile after mile.'},
+    {id:'nk-xc',brand:'Nike',model:'Zoom Rival XC 6',role:'Cross-Country',price:65,weight:200,pins:6,plate:'Pebax',drop:6,cushion:'Moderate',events:['xc','distance'],surfaces:['terrain'],body:'#3C5A3A',acc:'#C9962B',img:'assets/ref6.png',pitch:'Removable pins and an aggressive outsole that bite into mud and grass.'},
+    {id:'ad-xc',brand:'adidas',model:'XCS Trail',role:'Cross-Country',price:80,weight:210,pins:6,plate:'TPU',drop:6,cushion:'Moderate',events:['xc','distance'],surfaces:['terrain'],body:'#141109',acc:'#20488F',img:'assets/adidas-xcs.png',pitch:'A wrapped, water-shedding upper and lugged grip for the worst XC conditions.'}
+  ];
+
+  start = () => this.setState({ view:'quiz', step:0 });
+  goHome = () => this.setState({ view:'landing', step:0 });
+  choose(id){
+    const key = this.steps[this.state.step].key;
+    this.setState(s => ({ answers:{ ...s.answers, [key]:id } }));
+    if (this.props.autoAdvance) { clearTimeout(this._adv); this._adv = setTimeout(() => this.next(), 480); }
+  }
+  next = () => {
+    const s = this.state;
+    if (!s.answers[this.steps[s.step].key]) return;
+    if (s.step < this.steps.length - 1) this.setState({ step: s.step + 1 });
+    else this.startLoad();
+  };
+  back = () => {
+    const s = this.state;
+    if (s.step > 0) this.setState({ step: s.step - 1 });
+    else this.setState({ view:'landing' });
+  };
+  startLoad(){
+    clearInterval(this._t);
+    this.setState({ view:'loading', loadPct:0 });
+    this._t = setInterval(() => {
+      this.setState(s => {
+        const p = Math.min(100, s.loadPct + 3);
+        if (p >= 100){ clearInterval(this._t); setTimeout(() => this.setState({ view:'results' }), 380); }
+        return { loadPct: p };
+      });
+    }, 55);
+  }
+  restart = () => { clearInterval(this._t); this.setState({ view:'landing', step:0, answers:{}, compareIds:[], comparing:false, sortBy:'match', brand:'all', loadPct:0, eventQuery:'' }); };
+  editQuiz = () => this.setState({ view:'quiz', step:0, eventQuery:'' });
+  setSort(id){ this.setState({ sortBy:id }); }
+  setBrand(id){ this.setState({ brand:id }); }
+  clearBrand = () => this.setState({ brand:'all' });
+  toggleCompare(id){
+    this.setState(s => {
+      const has = s.compareIds.includes(id);
+      if (has) return { compareIds: s.compareIds.filter(x => x !== id) };
+      if (s.compareIds.length >= 3) return {};
+      return { compareIds: [...s.compareIds, id] };
+    });
+  }
+  openCompare = () => { if (this.state.compareIds.length >= 2) this.setState({ comparing:true }); };
+  closeCompare = () => this.setState({ comparing:false });
+  stop = (e) => { if (e && e.stopPropagation) e.stopPropagation(); };
+  componentWillUnmount(){ clearInterval(this._t); clearTimeout(this._adv); }
+  componentDidMount(){
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const bind = () => {
+      document.querySelectorAll('[data-magnetic]').forEach(el => {
+        if (el._mag) return; el._mag = true;
+        el.addEventListener('mousemove', e => {
+          const r = el.getBoundingClientRect();
+          el.style.setProperty('transition','transform .1s ease');
+          el.style.transform = `translate(${(e.clientX-r.left-r.width/2)*0.22}px,${(e.clientY-r.top-r.height/2)*0.3}px)`;
+        });
+        el.addEventListener('mouseleave', () => { el.style.setProperty('transition','transform .35s cubic-bezier(.16,1,.3,1)'); el.style.transform='translate(0,0)'; });
+      });
+    };
+    bind(); this._mi = setInterval(bind, 900);
+  }
+
+  labelFor(key, id){ const st = this.steps.find(s => s.key===key); const o = st && st.options.find(o => o.id===id); return o ? o.label : ''; }
+  inBudget(price, b){ const r = {b1:[0,90],b2:[90,140],b3:[140,200],b4:[200,9999]}[b]; return r ? price>=r[0] && price<=r[1] : true; }
+
+  score(shoe){
+    const a = this.state.answers; let s = 68;
+    if (a.event){ const ec = this.eventCat(a.event); if (shoe.events.includes(ec)) s += 21; else s -= 15; }
+    if (a.surface){ if (shoe.surfaces.includes(a.surface)) s += 6; else s -= 4; }
+    if (a.budget){ s += this.inBudget(shoe.price, a.budget) ? 5 : -7; }
+    if (a.injury && a.injury !== 'none'){ s += (shoe.cushion==='Max'||shoe.cushion==='Moderate') ? 5 : -3; }
+    if (a.strike){ if ((a.strike==='fore'||a.strike==='mid') && shoe.drop<=4) s += 3; if ((a.strike==='heel'||a.strike==='sup') && shoe.drop>=5) s += 3; }
+    if (a.experience){ if (a.experience==='new' && shoe.cushion!=='Minimal') s += 2; if (a.experience==='elite' && /carbon/i.test(shoe.plate)) s += 3; }
+    s += shoe.id.charCodeAt(1) % 4;
+    return Math.max(71, Math.min(98, s));
+  }
+  buildWhy(shoe){
+    const a = this.state.answers;
+    const ev = a.event ? this.labelFor('event', a.event).toLowerCase() : 'your event';
+    let out = `Tuned for ${ev}: ${shoe.pitch}`;
+    if (a.injury && a.injury !== 'none') out += ` With ${this.labelFor('injury',a.injury).toLowerCase()} on the radar, its ${shoe.cushion.toLowerCase()} cushioning keeps the impact honest.`;
+    else if (a.surface) out += ` Dialed for ${this.labelFor('surface',a.surface).toLowerCase()}.`;
+    return out;
+  }
+  recommend(){
+    const a = this.state.answers;
+    const ec = a.event ? this.eventCat(a.event) : null;
+    const scored = this.catalog.map(sh => ({ sh, sc: this.score(sh) }));
+    const inCat = scored.filter(e => ec && e.sh.events.includes(ec)).sort((x,y) => y.sc - x.sc);
+    const rest  = scored.filter(e => !(ec && e.sh.events.includes(ec))).sort((x,y) => y.sc - x.sc);
+    const pick = [...inCat, ...rest].slice(0, 4);
+    return pick.map((e,i) => ({ ...e.sh, score:e.sc, rank:i+1 }));
+  }
+
+  partStyle(i){
+    const s = this.state, v = s.view; let built;
+    if (v === 'landing' || v === 'results') built = true;
+    else if (v === 'quiz') built = !!s.answers[this.steps[i].key];
+    else built = s.loadPct >= i*15 + 6;
+    const enter = ['translateY(30px)','translateY(38px)','translateX(-34px)','translateX(-30px)','translateY(-52px) scale(.9)','scale(.55)'][i];
+    return { transformOrigin:'290px 200px', transition:'opacity .55s cubic-bezier(.16,1,.3,1), transform .75s cubic-bezier(.16,1,.3,1)', opacity: built?1:0, transform: built?'none':enter };
+  }
+
+  renderVals(){
+    const s = this.state, view = s.view;
+    const step = this.steps[s.step];
+    const answered = this.steps.filter(st => s.answers[st.key]).length;
+    const curSel = s.answers[step.key];
+
+    const isEventStep = s.step === 0;
+    let stepOpts = step.options;
+    if (isEventStep && s.eventQuery.trim()){ const qy = s.eventQuery.trim().toLowerCase(); stepOpts = stepOpts.filter(o => (o.label+' '+o.meta+' '+(o.cat||'')).toLowerCase().includes(qy)); }
+    const options = stepOpts.map((o,i) => {
+      const on = curSel === o.id;
+      return { ...o, on, idx: isEventStep ? '' : String.fromCharCode(65+i), choose: () => this.choose(o.id),
+        idxStyle: { position:'absolute', top:'10px', left:'12px', font:"700 10px/1 'Archivo'", letterSpacing:'.12em', color: on?'#20488F':'#b3a888' },
+        cardStyle: { position:'relative', display:'flex', flexDirection:'column', minHeight: isEventStep?'90px':'118px', textAlign:'left', padding:'14px 14px 15px', background: on?'#F3ECDA':'#EFE6D2', border:'1.5px solid #17140E', borderRadius:'3px', cursor:'pointer', boxShadow: on?'4px 4px 0 rgba(23,20,14,.9)':'0 0 0 rgba(0,0,0,0)', transition:'transform .2s cubic-bezier(.16,1,.3,1), box-shadow .2s ease, background .2s ease', animation:'sfUp .45s cubic-bezier(.16,1,.3,1) both', animationDelay:(Math.min(i,12)*45)+'ms' } };
+    });
+
+    const dots = this.steps.map((st,i) => {
+      const done = !!s.answers[st.key], cur = i === s.step;
+      return { n:'0'+(i+1), label:st.part, done,
+        rowStyle:{ display:'flex', alignItems:'center', gap:'10px', padding:'9px 11px', borderRadius:'3px', border:'1.5px solid '+(cur?'#17140E':'transparent'), background: cur?'#F3ECDA':'transparent', transition:'all .25s ease' },
+        numStyle:{ font:"'Anton'", fontSize:'15px', fontFamily:'Anton', color: done?'#20488F':(cur?'#17140E':'#b3a888'), minWidth:'20px' },
+        labelStyle:{ font:"700 10.5px/1.1 'Archivo'", letterSpacing:'.06em', textTransform:'uppercase', color: (done||cur)?'#17140E':'#8a8271' } };
+    });
+
+    const contReady = !!curSel;
+    const contStyle = { display:'inline-flex', alignItems:'center', gap:'12px', background: contReady?'#20488F':'#c9beA6', color: contReady?'#F3ECDA':'#8a8271', border:'none', font:"800 13px/1 'Archivo'", letterSpacing:'.08em', textTransform:'uppercase', padding:'15px 24px', borderRadius:'3px', cursor: contReady?'pointer':'not-allowed', boxShadow: contReady?'4px 4px 0 #17140E':'none', transition:'all .2s ease' };
+
+    // results
+    const recs = view === 'results' || view === 'loading' ? this.recommend() : [];
+    const brandsAvail = ['all', ...Array.from(new Set(recs.map(r => r.brand)))];
+    let shown = recs.filter(r => s.brand === 'all' || r.brand === s.brand);
+    if (s.sortBy === 'price') shown = [...shown].sort((a,b) => a.price - b.price);
+    else if (s.sortBy === 'weight') shown = [...shown].sort((a,b) => a.weight - b.weight);
+    else shown = [...shown].sort((a,b) => b.score - a.score);
+
+    const cards = shown.map((r,i) => {
+      const inC = s.compareIds.includes(r.id);
+      return { rank:r.rank, score:r.score, brand:r.brand, model:r.model, role:r.role, price:'$'+r.price, pins:r.pins, weight:r.weight+'g', drop:r.drop+'mm', plateShort:r.plate, cushion:r.cushion, why:this.buildWhy(r),
+        toggle: () => this.toggleCompare(r.id),
+        cmpLabel: inC ? '✓ In compare' : '+ Compare',
+        cmpStyle:{ background: inC?'#20488F':'transparent', color: inC?'#F3ECDA':'#17140E', border:'1.5px solid '+(inC?'#20488F':'#17140E'), font:"700 10.5px/1 'Archivo'", letterSpacing:'.1em', textTransform:'uppercase', padding:'10px 13px', borderRadius:'2px', cursor:'pointer', transition:'all .2s ease' },
+        cardStyle:{ position:'relative', display:'flex', flexDirection:'column', background:'#F3ECDA', border:'1.5px solid #17140E', borderRadius:'4px', overflow:'hidden', boxShadow:'4px 5px 0 #17140E', transition:'transform .25s cubic-bezier(.16,1,.3,1), box-shadow .25s ease', animation:'sfUp .5s cubic-bezier(.16,1,.3,1) both', animationDelay:(i*80)+'ms' },
+        artStyle:{ position:'relative', margin:'4px 12px 0', borderRadius:'3px', border:'1.5px solid #17140E', overflow:'hidden', background:'#efe6d2' },
+        img: r.img,
+        tintStyle:{ position:'absolute', inset:0, background:r.acc, mixBlendMode:'soft-light', opacity:.30, pointerEvents:'none', zIndex:2 },
+        figNo:'Fig. 0'+r.rank,
+        figStyle:{ position:'absolute', top:'10px', right:'10px', zIndex:3, font:"700 9px/1 'Archivo'", letterSpacing:'.12em', textTransform:'uppercase', background:'#F3ECDA', border:'1px solid #17140E', padding:'5px 7px', borderRadius:'2px' },
+        bodyFill:{ fill:r.body }, accFill:{ fill:r.acc } };
+    });
+
+    const sortChips = [{id:'match',label:'Best Match'},{id:'price',label:'Price'},{id:'weight',label:'Weight'}].map(c => ({ label:c.label, pick:() => this.setSort(c.id), style: this.chip(s.sortBy===c.id) }));
+    const brandChips = brandsAvail.map(b => ({ label: b==='all'?'All':b, pick:() => this.setBrand(b), style: this.chip(s.brand===b) }));
+
+    const cmpCount = s.compareIds.length;
+    const compareBtnLabel = cmpCount>=2 ? `Compare ${cmpCount} spikes →` : `Select 2+ to compare (${cmpCount})`;
+    const compareBtnStyle = { display:'inline-flex', alignItems:'center', gap:'8px', background: cmpCount>=2?'#17140E':'transparent', color: cmpCount>=2?'#EDE3CE':'#8a8271', border:'1.5px solid '+(cmpCount>=2?'#17140E':'#c9beA6'), font:"800 11px/1 'Archivo'", letterSpacing:'.1em', textTransform:'uppercase', padding:'13px 18px', borderRadius:'3px', cursor: cmpCount>=2?'pointer':'not-allowed', transition:'all .2s ease' };
+
+    const cmpShoes = this.catalog.filter(c => s.compareIds.includes(c.id)).map(c => ({ ...c, score: this.score(c) }));
+    const compareHead = cmpShoes.map(c => ({ brand:c.brand, model:c.model }));
+    const rowDefs = [
+      ['Match', c => c.score+'%', true],
+      ['Price', c => '$'+c.price],
+      ['Weight', c => c.weight+'g'],
+      ['Pins', c => String(c.pins)],
+      ['Plate', c => c.plate],
+      ['Drop', c => c.drop+'mm'],
+      ['Cushion', c => c.cushion],
+      ['Role', c => c.role]
+    ];
+    const compareRows = rowDefs.map((d,ri) => ({ label:d[0], trStyle:{ background: ri%2?'rgba(255,255,255,.35)':'transparent' },
+      cells: cmpShoes.map(c => ({ v:d[1](c), extra: d[2]?'font-weight:800;color:#20488F':'' })) }));
+
+    const answerChips = this.steps.filter(st => s.answers[st.key]).map(st => this.labelFor(st.key, s.answers[st.key]));
+
+    const loadMsgs = ['Reading your event profile…','Matching plate geometry…','Weighing cushioning vs. speed…','Cross-checking your budget…','Ranking your top spikes…'];
+
+    return {
+      showGrain: this.props.showGrain ?? true,
+      showMarquee: this.props.showMarquee ?? true,
+      isLanding: view==='landing', isQuiz: view==='quiz', isLoading: view==='loading', isResults: view==='results',
+      inFlow: view!=='landing', comparing: s.comparing,
+      start:this.start, goHome:this.goHome, restart:this.restart, back:this.back, next:this.next, editQuiz:this.editQuiz,
+      openCompare:this.openCompare, closeCompare:this.closeCompare, clearBrand:this.clearBrand, stop:this.stop,
+      q:{ kicker:step.kicker, title:step.title, sub:step.sub, options,
+          gridStyle: isEventStep
+            ? { display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:'10px', maxHeight:'346px', overflowY:'auto', padding:'2px 8px 2px 2px' }
+            : { display:'grid', gridTemplateColumns:`repeat(${step.cols},1fr)`, gap:'12px' } },
+      showEventSearch: isEventStep, eventQuery: s.eventQuery, onEventSearch: this.onEventSearch,
+      eventCount: stepOpts.length, eventEmpty: isEventStep && stepOpts.length === 0,
+      stepKey:'step'+s.step, dots,
+      barStyle:{ height:'100%', width:(answered/6*100)+'%', background:'#20488F', transition:'width .6s cubic-bezier(.16,1,.3,1)' },
+      backLabel: s.step===0 ? 'Intro' : 'Back',
+      contLabel: s.step < 5 ? 'Continue' : 'Reveal my match',
+      contStyle, contDisabled: !contReady,
+      progressLabel: `Lane ${s.step+1} of 6`,
+      builtCount: answered,
+      capName: step.part,
+      shoeP0:this.partStyle(0), shoeP1:this.partStyle(1), shoeP2:this.partStyle(2), shoeP3:this.partStyle(3), shoeP4:this.partStyle(4), shoeP5:this.partStyle(5),
+      loadPct:s.loadPct, loadMsg: loadMsgs[Math.min(loadMsgs.length-1, Math.floor(s.loadPct/20))],
+      cards, isEmpty: view==='results' && cards.length===0,
+      gridStyle:{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(300px,1fr))', gap:'22px', marginTop:'8px' },
+      sortChips, brandChips, answerChips,
+      compareBtnLabel, compareBtnStyle, compareHead, compareRows
+    };
+  }
+  chip(on){ return { background: on?'#17140E':'transparent', color: on?'#EDE3CE':'#17140E', border:'1.5px solid #17140E', font:"700 10.5px/1 'Archivo'", letterSpacing:'.08em', textTransform:'uppercase', padding:'9px 13px', borderRadius:'2px', cursor:'pointer', transition:'all .2s ease' }; }
+}
+</script>
+</body>
+</html>
