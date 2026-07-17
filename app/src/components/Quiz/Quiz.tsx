@@ -20,14 +20,18 @@ function isStepAnswered(answers: Answers, key: (typeof QUIZ_STEPS)[number]['key'
 
 export default function Quiz({ answers, step, onChoose, onNext, onBack }: Props) {
   const currentStep = QUIZ_STEPS[step];
-  const answeredCount = QUIZ_STEPS.filter((s) => isStepAnswered(answers, s.key)).length;
-  const built = QUIZ_STEPS.map((s) => isStepAnswered(answers, s.key));
+  // A piece only "locks in" (checkmark + shoe assembly) once you've moved
+  // past its question — picking an option on the question you're still on
+  // doesn't tick it yet, so the reveal happens on Continue.
+  const isPassed = (i: number) => i < step && isStepAnswered(answers, QUIZ_STEPS[i].key);
+  const passedCount = QUIZ_STEPS.filter((_, i) => isPassed(i)).length;
+  const built = QUIZ_STEPS.map((_, i) => isPassed(i));
   const currentAnswered = isStepAnswered(answers, currentStep.key);
 
   return (
     <main className="relative z-10">
       <div className="h-[5px] border-b-[1.5px] border-ink bg-track">
-        <div className="h-full bg-blue transition-[width] duration-[600ms] ease-out" style={{ width: `${(answeredCount / QUIZ_STEPS.length) * 100}%` }} />
+        <div className="h-full bg-blue transition-[width] duration-[600ms] ease-out" style={{ width: `${(passedCount / QUIZ_STEPS.length) * 100}%` }} />
       </div>
 
       <section data-quizgrid data-pad className="mx-auto grid max-w-[1280px] items-start gap-[34px] px-[34px] pb-10 pt-[30px]" style={{ gridTemplateColumns: '210px 1fr 400px' }}>
@@ -36,7 +40,7 @@ export default function Quiz({ answers, step, onChoose, onNext, onBack }: Props)
           <div className="mb-4 text-[10.5px] font-bold uppercase leading-none tracking-[.22em] text-muted">Assembly&nbsp;Spec</div>
           <ol className="m-0 flex list-none flex-col gap-0.5 p-0">
             {QUIZ_STEPS.map((s, i) => {
-              const done = isStepAnswered(answers, s.key);
+              const done = isPassed(i);
               const cur = i === step;
               return (
                 <li key={s.key} className="flex items-center gap-2.5 rounded-[3px] px-[11px] py-[9px] transition-all duration-250" style={{ border: `1.5px solid ${cur ? '#17140E' : 'transparent'}`, background: cur ? '#F3ECDA' : 'transparent' }}>
@@ -97,7 +101,7 @@ export default function Quiz({ answers, step, onChoose, onNext, onBack }: Props)
             <div className="absolute inset-0 opacity-[.07]" style={{ backgroundImage: 'radial-gradient(circle,#17140E 1px,transparent 1.2px)', backgroundSize: '12px 12px' }} />
             <div className="relative flex items-baseline justify-between px-4 pb-1 pt-3.5">
               <span className="text-[10px] font-bold uppercase leading-none tracking-[.2em] text-muted">Live Build</span>
-              <span className="font-display text-2xl text-blue">{answeredCount}<span className="text-sm text-muted">/{QUIZ_STEPS.length}</span></span>
+              <span className="font-display text-2xl text-blue">{passedCount}<span className="text-sm text-muted">/{QUIZ_STEPS.length}</span></span>
             </div>
             <ShoeStage built={built} className="relative px-2.5 pb-0.5 pt-1.5" />
             <div className="relative min-h-[58px] border-t-[1.5px] border-ink px-4 py-3">
